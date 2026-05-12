@@ -80,7 +80,7 @@ existing system.
 ![Create Customer](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/09_create_customer.png?raw=true)
 
 ### Bill Management – New Bill
-![New Bill]()
+![New Bill](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/14_new_bill.png?raw=true)
 
 ### View Bills
 ![View Bills]()
