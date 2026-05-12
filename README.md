@@ -74,7 +74,7 @@ existing system.
 ![Admin Window](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/02_admin_dashboard.png?raw=true)
 
 ### View Employees
-![View Employees]()
+![View Employees](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/08_view_employees.png?raw=true)
 
 ### Create Customer
 ![Create Customer]()
