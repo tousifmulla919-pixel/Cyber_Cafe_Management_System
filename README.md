@@ -77,7 +77,7 @@ existing system.
 ![View Employees](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/08_view_employees.png?raw=true)
 
 ### Create Customer
-![Create Customer]()
+![Create Customer](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/09_create_customer.png?raw=true)
 
 ### Bill Management – New Bill
 ![New Bill]()
