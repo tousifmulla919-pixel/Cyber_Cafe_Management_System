@@ -1,0 +1,1268 @@
+// --- File: AdminWindow.java ---
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import java.text.*;
+import javax.swing.*;
+public class AdminWindow extends JFrame implements ActionListener
+{
+JMenuBar menuBar;
+JMenu employeeMenu,memberMenu,customerMenu,billMenu;
+JMenuItem create,delete,update,view,create1,delete1,update1,view1,nbill,vbill;
+JButton b1,b2,b3;
+JPanel p1,p2;
+String id1;
+JLabel l1,l2,l3,l4,l5,l6,l7,l8,l9,l10,l11,l12,l13,l14;
+JTextField t1,t2,t3,t4,t5,t6,t7;
+int id;
+Connection conn =null;
+Statement stmt=null;
+PreparedStatement ps=null,ps1=null,ps2=null,ps3=null,ps4=null,ps5=null,ps6=null,ps7=null,ps8=null,ps9=null,ps10=null,ps11=null,ps12=null,ps13=null,ps14=null,ps15=null,ps16=null,ps17=null,ps18=null;
+ResultSet rs = null,rs1=null,rs2=null,rs3=null;
+AdminWindow()
+{
+Toolkit kit=Toolkit.getDefaultToolkit();
+Dimension ScreenSize=kit.getScreenSize();
+int screenHeight=ScreenSize.height;
+System.out.println(screenHeight);
+int screenWidth=ScreenSize.width;
+setLayout(new BorderLayout());
+setSize(screenWidth/2,screenHeight/2);
+setLocationByPlatform(true);
+setTitle("Welcome Admin");
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+setVisible(true);
+menuBar=new JMenuBar();
+employeeMenu=new JMenu("Employee");
+memberMenu=new JMenu("Member");
+customerMenu=new JMenu("Customer");
+billMenu=new JMenu("Bill");
+
+menuBar.add(employeeMenu);
+create=new JMenuItem("Create");
+create.addActionListener(this);
+update=new JMenuItem("Update");
+update.addActionListener(this);
+delete=new JMenuItem("Delete");
+delete.addActionListener(this);
+view=new JMenuItem("View");
+view.addActionListener(this);
+employeeMenu.add(create);
+employeeMenu.add(update);
+employeeMenu.add(delete);
+employeeMenu.addSeparator();
+employeeMenu.add(view);
+
+//menuBar.add(memberMenu);
+
+
+menuBar.add(customerMenu);
+create1=new JMenuItem("Create");
+create1.addActionListener(this);
+update1=new JMenuItem("Update");
+update1.addActionListener(this);
+delete1=new JMenuItem("Delete");
+delete1.addActionListener(this);
+view1=new JMenuItem("View");
+view1.addActionListener(this);
+customerMenu.add(create1);
+customerMenu.add(update1);
+customerMenu.add(delete1);
+customerMenu.addSeparator();
+customerMenu.add(view1);
+
+menuBar.add(billMenu);
+nbill=new JMenuItem("New");
+nbill.addActionListener(this);
+vbill=new JMenuItem("View");
+vbill.addActionListener(this);
+billMenu.add(nbill);
+billMenu.add(vbill);
+
+setJMenuBar(menuBar);
+l1=new JLabel("Customer name : ");
+l2=new JLabel("Customer name : ");
+l3=new JLabel("Customer username : ");
+l4=new JLabel("Customer username : ");
+l5=new JLabel("Total time : ");
+l6=new JLabel("Total time : ");
+l7=new JLabel("Total bill : ");
+l8=new JLabel("Total bill : ");
+p1=new JPanel();
+p1.setLayout(new GridLayout(3,2,1,1));
+p1.add(l1);
+p1.add(l2);
+//p1.add(l3);
+//p1.add(l4);
+p1.add(l5);
+p1.add(l6);
+p1.add(l7);
+p1.add(l8);
+p2=new JPanel(new GridLayout(7,2,1,1));
+l10=new JLabel("Enter bill number : ");
+l9=new JLabel("Enter username : ");
+l11=new JLabel("Enter login time : ");
+l12=new JLabel("Enter logout time : ");
+l13=new JLabel("Membership purchased : ");
+l14=new JLabel("Membership ID : ");
+t1=new JTextField(20);
+t2=new JTextField(20);
+t3=new JTextField(20);
+t4=new JTextField(20);
+t5=new JTextField(20);
+t6=new JTextField(20);
+//t6.getDocument().addDocumentListener(this);
+t7=new JTextField(20);
+//t2.setEditable(false);
+//t3.setEditable(false);
+//t4.setEditable(false);
+//t5.setEditable(false);
+b2=new JButton("Okay");
+p2.add(l10);
+p2.add(t2);
+p2.add(l9);
+p2.add(t1);
+p2.add(l11);
+p2.add(t3);
+p2.add(l12);
+p2.add(t4);
+p2.add(l13);
+p2.add(t6);
+p2.add(b2);
+b2.addActionListener(this);
+
+
+try
+{
+Class.forName("org.postgresql.Driver");
+conn=DriverManager.getConnection("jdbc:postgresql://localhost/project1","cmh1","1234");
+if(conn!=null)
+System.out.println("Connection estabalished!");
+ps=conn.prepareStatement("delete from admin where aid = ?");
+//stmt=conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+
+ps1=conn.prepareStatement("update admin set aaddr=?,aphone=?,aemail=?,apassword=? where aid=? ");
+ps2=conn.prepareStatement("Select aaddr,aphone,aemail,apassword from admin where aid = ?");
+
+
+ps3=conn.prepareStatement("delete from customer where cusername = ?");
+//stmt=conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+
+ps4=conn.prepareStatement("update customer set mid=? ,caddr=?,cphone=?,cemail=?,cpass=? where cusername=? ");
+ps5=conn.prepareStatement("Select mid,caddr,cphone,cemail,cpass from customer where cusername = ?");
+
+ps6=conn.prepareStatement("insert into cbill values(?,?,(select TO_TIMESTAMP(?,'HH12:MI:SS')::TIME),(select TO_TIMESTAMP(?,'HH12:MI:SS')::TIME))");
+ps7=conn.prepareStatement("update cbill set total_time=logout_time-login_time where bno=?");
+ps8=conn.prepareStatement("update cbill set total_bill=(select extract(epoch from (total_time::time))/extract(epoch from ('01:00:00'::time)) *30 from cbill where bno=?)where bno=?");
+System.out.println(ps8);
+ps9=conn.prepareStatement("select * from cbill where bno = ?");
+ps10=conn.prepareStatement("select * from customer where cusername = ?");
+ps11=conn.prepareStatement("update cbill set membership_purchased=? where bno=?");
+ps12=conn.prepareStatement("update cbill set mid=? where bno=?");
+ps13=conn.prepareStatement("update cbill set remaining_hrs = (remaining_hrs - (select extract(epoch from (total_time::time))/extract(epoch from ('01:00:00'::time))))where bno=?");
+ps14=conn.prepareStatement("update cbill set remaining_hrs = (membership.mhours - (select extract(epoch from (total_time::time))/extract(epoch from ('01:00:00'::time))where membership.mid=cbill.mid))from membership,customer where bno=?");
+ps15=conn.prepareStatement("select * from cbill where cusername = ? order by bno",ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+ps16=conn.prepareStatement("update cbill set remaining_hrs=?-(select extract(epoch from (total_time::time))/extract (epoch from('01:00:00'::time)))where bno=?");
+ps17=conn.prepareStatement("select * from membership where mid=?");
+ps18=conn.prepareStatement("update customer set mid=null where cusername=?");
+}
+
+catch(Exception e)
+{
+System.out.println(e);
+}
+
+}
+public void actionPerformed(ActionEvent ae)
+{
+int id,mid,bno;
+String aaddr,aphone,aemail,apassword,id1;
+String mid1,caddr,cphone,cemail,cpass,cusername;
+String cus,time1,time2;
+try
+{
+if(ae.getSource()==create)
+{
+new CreateAdmin();
+
+}
+if(ae.getSource()==delete)
+{
+
+
+id1=JOptionPane.showInputDialog(null,"Enter the id");
+id=Integer.parseInt(id1);
+
+ps.setInt(1,id);
+ps.executeUpdate();
+JOptionPane.showMessageDialog(null,"Record deleted successfully!");
+
+}
+if(ae.getSource()==update)
+{
+id1=JOptionPane.showInputDialog(null,"Enter the id");
+id=Integer.parseInt(id1);
+ps2.setInt(1,id);
+rs=ps2.executeQuery();
+
+rs.next();
+System.out.println(rs.getString("aaddr"));
+System.out.println(rs.getString("aemail"));
+System.out.println(rs.getString("aphone"));
+System.out.println(rs.getString("apassword"));
+
+aaddr=JOptionPane.showInputDialog(null,"Enter new address",rs.getString("aaddr"));
+aphone=JOptionPane.showInputDialog(null,"Enter new phone ",rs.getString("aphone"));
+aemail=JOptionPane.showInputDialog(null,"Enter new email",rs.getString("aemail"));
+apassword=JOptionPane.showInputDialog(null,"Enter new password",rs.getString("apassword"));
+ps1.setString(1,aaddr);
+ps1.setString(2,aphone);
+ps1.setString(3,aemail);
+ps1.setString(4,apassword);
+ps1.setInt(5,id);
+ps1.executeUpdate();
+JOptionPane.showMessageDialog(null,"Requested data updated successfully!");
+}
+if(ae.getSource()==view)
+{
+System.out.println("in view");
+new ViewWindow();
+}
+if(ae.getSource()==create1)
+{
+new CreateCustomer();
+}
+if(ae.getSource()==view1)
+{
+new ViewWindowc();
+}
+if(ae.getSource()==delete1)
+{
+
+
+cusername=JOptionPane.showInputDialog(null,"Enter the username");
+//id=Integer.parseInt(id1);
+
+ps3.setString(1,cusername);
+ps3.executeUpdate();
+JOptionPane.showMessageDialog(null,"Record deleted successfully!");
+}
+if(ae.getSource()==update1)
+{
+cusername=JOptionPane.showInputDialog(null,"Enter the username");
+//id=Integer.parseInt(id1);
+ps5.setString(1,cusername);
+rs=ps5.executeQuery();
+
+rs.next();
+System.out.println(rs.getInt("mid"));
+//mid=Integer.parseInt(mid);
+System.out.println(rs.getString("caddr"));
+System.out.println(rs.getString("cemail"));
+System.out.println(rs.getString("cphone"));
+System.out.println(rs.getString("cpass"));
+
+mid1=JOptionPane.showInputDialog(null,"Enter new membership id",rs.getInt("mid"));
+caddr=JOptionPane.showInputDialog(null,"Enter new address",rs.getString("caddr"));
+cphone=JOptionPane.showInputDialog(null,"Enter new phone ",rs.getString("cphone"));
+cemail=JOptionPane.showInputDialog(null,"Enter new email",rs.getString("cemail"));
+cpass=JOptionPane.showInputDialog(null,"Enter new password",rs.getString("cpass"));
+mid=Integer.parseInt(mid1);
+ps4.setInt(1,mid);
+ps4.setString(2,caddr);
+ps4.setString(3,cphone);
+ps4.setString(4,cemail);
+ps4.setString(5,cpass);
+ps4.setString(6,cusername);
+ps4.executeUpdate();
+JOptionPane.showMessageDialog(null,"Requested data updated successfully!");
+}
+if(ae.getSource()==nbill)
+{
+add(p2,BorderLayout.NORTH);
+p2.revalidate();
+p2.validate();
+}
+if(ae.getSource()==b2)
+{
+System.out.println(t6.getText());
+if(t6.getText().equals("NO"))
+{
+String bno1=t2.getText();
+bno=Integer.parseInt(bno1);
+cus=t1.getText();
+time1=t3.getText();
+time2=t4.getText();
+ps6.setInt(1,bno);
+ps6.setString(2,cus);
+ps6.setString(3,time1);
+ps6.setString(4,time2);
+ps6.executeUpdate();
+ps7.setInt(1,bno);
+ps7.executeUpdate();
+
+ps8.setInt(1,bno);
+ps8.setInt(2,bno);
+ps8.executeUpdate();
+ps9.setInt(1,bno);
+rs=ps9.executeQuery();
+ps10.setString(1,cus);
+rs1=ps10.executeQuery();
+rs1.next();
+rs.next();
+l2.setText(rs1.getString("cname"));
+SimpleDateFormat df=new SimpleDateFormat("HH:mm:ss");
+java.util.Date b=rs.getTime("total_time");
+String bval=df.format(b);
+l6.setText(bval);
+float a=rs.getFloat("total_bill");
+String aval=String.valueOf(a);
+l8.setText(aval);
+//System.out.println(rs.getTime("total_time"));
+//System.out.println(rs.getFloat("total_bill"));
+add(p1,BorderLayout.SOUTH);
+p1.revalidate();
+p1.validate();
+}
+if(t6.getText().equals("YES"))
+{
+String bno1=t2.getText();
+bno=Integer.parseInt(bno1);
+cus=t1.getText();
+time1=t3.getText();
+time2=t4.getText();
+String ms=t6.getText();
+ps6.setInt(1,bno);
+ps6.setString(2,cus);
+ps6.setString(3,time1);
+ps6.setString(4,time2);
+ps6.executeUpdate();
+ps7.setInt(1,bno);
+ps7.executeUpdate();
+mid1=JOptionPane.showInputDialog(null,"Enter the membership id");
+mid=Integer.parseInt(mid1);
+ps15.setString(1,cus);
+rs=ps15.executeQuery();
+rs.next();
+
+//rs.first();
+//rs.next();
+System.out.println(rs.getString("cusername"));
+ps11.setString(1,ms);
+ps11.setInt(2,bno);
+ps11.executeUpdate();
+ps12.setInt(1,mid);
+ps12.setInt(2,bno);
+ps12.executeUpdate();
+System.out.println(ps12);
+ps17.setInt(1,mid);
+rs1=ps17.executeQuery();
+rs1.next();
+float mhrs=rs1.getFloat("mhours");
+System.out.println(mhrs);
+System.out.println(rs.getString("cusername"));
+if(!rs.next())
+{
+//ps14.setInt(1,bno);
+//ps14.executeUpdate();
+//rs=ps9.executeQuery();
+
+ps16.setFloat(1,mhrs);
+ps16.setInt(2,bno);
+System.out.println(ps16);
+ps16.executeUpdate();
+
+}
+else
+{
+rs.last();
+rs.previous();
+//System.out.println(rs.getString("cusername"));
+//System.out.println(rs.getFloat("remaining_hrs"));
+float hrs=rs.getFloat("remaining_hrs");
+System.out.println(hrs);
+ps16.setFloat(1,hrs);
+ps16.setInt(2,bno);
+System.out.println(ps16);
+ps16.executeUpdate();
+//rs=ps9.executeQuery();
+}
+/*ps8.setInt(1,bno);
+ps8.setInt(2,bno);
+ps8.executeUpdate();
+ps9.setInt(1,bno);
+*/
+ps10.setString(1,cus);
+rs2=ps10.executeQuery();
+rs2.next();
+//rs.next();
+ps9.setInt(1,bno);
+rs3=ps9.executeQuery();
+rs3.next();
+l2.setText(rs2.getString("cname"));
+SimpleDateFormat df=new SimpleDateFormat("HH:mm:ss");
+java.util.Date b=rs3.getTime("total_time");
+String bval=df.format(b);
+l6.setText(bval);
+l7.setText("Remaining Membership Hours:");
+float a=rs3.getFloat("remaining_hrs");
+String aval=String.valueOf(a);
+l8.setText(aval);
+if(a<=0)
+{
+float add_bill=(-1*a*30);
+JOptionPane.showInputDialog(null,"Your membership has ended.Contact the cafe administrator to renew it.Charges for additional usage : ",add_bill);
+ps18.setString(1,cus);
+ps18.executeUpdate();
+}
+//System.out.println(rs.getTime("total_time"));
+//System.out.println(rs.getFloat("total_bill"));
+add(p1,BorderLayout.SOUTH);
+p1.revalidate();
+p1.validate();
+
+}
+t1.setText("");
+t2.setText("");
+t3.setText("");
+t4.setText("");
+t5.setText("");
+t6.setText("");
+}
+if(ae.getSource()==vbill)
+{
+new ViewWindowb();
+}
+}
+catch (Exception e)
+{
+System.out.println(e);
+}
+}
+/*public void changedUpdate(DocumentEvent de)
+{
+addele();
+}
+public void insertUpdate(DocumentEvent de)
+{
+addele();
+}
+public void removeUpdate(DocumentEvent de)
+{
+addele();
+}
+public void addele()
+{
+if(t6.getText()=="YES")
+{
+p2.add(l14);
+p2.add(t7);
+p2.revalidate();
+p2.validate();
+}
+if(t6.getText()=="NO")
+{
+p2.revalidate();
+p2.validate();
+}
+}*/
+
+public static void main(String args[])
+{
+new AdminWindow();
+}
+}
+
+
+
+// --- File: CreateAdmin.java ---
+
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+public class CreateAdmin extends JFrame implements ActionListener
+{
+JTextField t1,t2,t3,t4,t5,t6,t7,t8;
+JLabel l1,l2,l3,l4,l5,l6,l7,l8,l9;
+JButton b1,b2;
+JComboBox cb1,cb2,cb3;
+JTextArea tx1;
+String day[]={"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
+String month[]={"January","February","March","April","May","June","July","August","September","October","November","December"};
+String year[]={"1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018"};
+Connection conn=null;
+PreparedStatement ps1=null;
+CreateAdmin()
+{
+setLayout(null);
+
+
+l1=new JLabel("Admin ID");
+l1.setBounds(10,10,100,20);
+l2=new JLabel("Name");
+l2.setBounds(10,40,100,20);
+l3=new JLabel("Address");
+l3.setBounds(10,70,100,20);
+l4=new JLabel("Phone");
+l4.setBounds(10,120,100,20);
+l5=new JLabel("Email");
+l5.setBounds(10,150,100,20);
+l6=new JLabel("Username");
+l6.setBounds(10,180,100,20);
+l7=new JLabel("Password");
+l7.setBounds(10,210,100,20);
+l8=new JLabel("Birthdate");
+l8.setBounds(10,240,100,20);
+l9=new JLabel("Age");
+l9.setBounds(10,270,100,20);
+add(l1);
+add(l2);
+add(l3);
+add(l4);
+add(l5);
+add(l6);
+add(l7);
+add(l8);
+add(l9);
+
+t1=new JTextField(30);
+t1.setBounds(120,10,150,20);
+t2=new JTextField(30);
+t2.setBounds(120,40,150,20);
+tx1=new JTextArea(2,30);
+tx1.setBounds(120,70,150,40);
+//JScrollPane j=new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//tx1.add(j);
+t3=new JTextField(30);
+t3.setBounds(120,120,150,20);
+t4=new JTextField(30);
+t4.setBounds(120,150,150,20);
+t5=new JTextField(30);
+t5.setBounds(120,180,150,20);
+t6=new JTextField(30);
+t6.setBounds(120,210,150,20);
+t8=new JTextField(30);
+t8.setBounds(120,240,150,20);
+t7=new JTextField(30);
+t7.setBounds(120,270,150,20);
+add(t1);
+add(t2);
+add(tx1);
+add(t3);
+add(t4);
+add(t5);
+add(t6);
+add(t8);
+add(t7);
+
+b1=new JButton("Okay");
+b1.setBounds(120,300,100,20);
+b2=new JButton("Cancel");
+b2.setBounds(230,300,100,20);
+add(b1);
+b1.addActionListener(this);
+add(b2);
+b2.addActionListener(this);
+
+setSize(384,384);
+setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+setVisible(true);
+try
+{
+Class.forName("org.postgresql.Driver");
+conn=DriverManager.getConnection("jdbc:postgresql://localhost/project1","cmh1","1234");
+if(conn!=null)
+System.out.println("Connection estabalished to db project!");
+ps1=conn.prepareStatement("insert into admin values (?,?,?,?,?,?,?,(select to_date(?,'DD MM YYYY')),?)");
+System.out.println(ps1);
+}
+catch(Exception e)
+{
+System.out.println(e);
+}
+}
+public void actionPerformed(ActionEvent ae)
+{
+String name,phone,email,username,password,age,addr,bdate;
+int id;
+try
+{
+if(ae.getSource()==b1)
+{
+if(t1.getText().equals("") || t2.getText().equals("")  || t3.getText().equals("")  || t4.getText().equals("")  || t5.getText().equals("")  || t6.getText().equals("")  || t7.getText().equals("") )
+JOptionPane.showMessageDialog(null,"All fields are mandatory to fill in order to proceed!","Warning",JOptionPane.WARNING_MESSAGE);
+
+//if(t1.getText()!=null && t2.getText()!=null && t3.getText()!=null && t4.getText()!=null && t5.getText()!=null && t6.getText()!=null && t7.getText()!=null)
+else
+{
+id=Integer.parseInt(t1.getText());
+name=t2.getText();
+phone=t3.getText();
+email=t4.getText();
+username=t5.getText();
+password=t6.getText();
+age=t7.getText();
+bdate=t8.getText();
+addr=tx1.getText();
+ps1.setInt(1,id);
+ps1.setString(2,name);
+ps1.setString(3,addr);
+ps1.setString(4,phone);
+ps1.setString(5,email);
+ps1.setString(6,username);
+ps1.setString(7,password);
+ps1.setString(8,bdate);
+ps1.setString(9,age);
+System.out.println(ps1);
+ps1.executeUpdate();
+JOptionPane.showMessageDialog(null,"Data added to database successfully!");
+t1.setText("");
+tx1.setText("");
+t2.setText("");
+t3.setText("");
+t4.setText("");
+t5.setText("");
+t6.setText("");
+t7.setText("");
+t8.setText("");
+}
+
+}
+if(ae.getSource()==b2)
+this.dispose();
+}
+catch (Exception e)
+{
+System.out.println(e);
+}
+}
+public void itemStateChanged(ItemEvent ie)
+{
+}
+public static void main(String args[])
+{
+new CreateAdmin();
+}
+}
+
+
+
+// --- File: CreateCustomer.java ---
+
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+public class CreateCustomer extends JFrame implements ActionListener
+{
+JTextField t1,t2,t3,t4,t5,t6,t7,t8;
+JLabel l1,l2,l3,l4,l5,l6,l7,l8,l9;
+JButton b1,b2;
+JComboBox cb1,cb2,cb3;
+JTextArea tx1;
+//String day[]/{"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
+//String month[]={"January","February","March","April","May","June","July","August","September","October","November","December"};
+//String year[]=//{"1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018"};
+Connection conn=null;
+PreparedStatement ps1=null;
+CreateCustomer()
+{
+setLayout(null);
+
+
+l1=new JLabel("Membership ID");
+l1.setBounds(10,10,100,20);
+l2=new JLabel("Name");
+l2.setBounds(10,40,100,20);
+l3=new JLabel("Address");
+l3.setBounds(10,70,100,20);
+l4=new JLabel("Email");
+l4.setBounds(10,120,100,20);
+l5=new JLabel("Phone");
+l5.setBounds(10,150,100,20);
+l6=new JLabel("Username");
+l6.setBounds(10,180,100,20);
+l7=new JLabel("Password");
+l7.setBounds(10,210,100,20);
+l8=new JLabel("Birthdate");
+l8.setBounds(10,240,100,20);
+//l9=new JLabel("Age");
+//l9.setBounds(10,270,100,20);
+add(l1);
+add(l2);
+add(l3);
+add(l4);
+add(l5);
+add(l6);
+add(l7);
+add(l8);
+//add(l9);
+
+t1=new JTextField(30);
+t1.setBounds(120,10,150,20);
+t2=new JTextField(30);
+t2.setBounds(120,40,150,20);
+tx1=new JTextArea(2,30);
+tx1.setBounds(120,70,150,40);
+//JScrollPane j=new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//tx1.add(j);
+t3=new JTextField(30);
+t3.setBounds(120,120,150,20);
+t4=new JTextField(30);
+t4.setBounds(120,150,150,20);
+t5=new JTextField(30);
+t5.setBounds(120,180,150,20);
+t6=new JTextField(30);
+t6.setBounds(120,210,150,20);
+t8=new JTextField(30);
+t8.setBounds(120,240,150,20);
+//t7=new JTextField(30);
+//t7.setBounds(120,270,150,20);
+add(t1);
+add(t2);
+add(tx1);
+add(t3);
+add(t4);
+add(t5);
+add(t6);
+add(t8);
+//add(t7);
+
+b1=new JButton("Okay");
+b1.setBounds(120,270,100,20);
+b2=new JButton("Cancel");
+b2.setBounds(230,270,100,20);
+add(b1);
+b1.addActionListener(this);
+add(b2);
+b2.addActionListener(this);
+
+setSize(384,384);
+setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+setVisible(true);
+try
+{
+Class.forName("org.postgresql.Driver");
+conn=DriverManager.getConnection("jdbc:postgresql://localhost/project1","cmh1","1234");
+if(conn!=null)
+System.out.println("Connection estabalished to db project!");
+ps1=conn.prepareStatement("insert into customer values (default,?,?,?,?,?,?,?,(select to_date(?,'DD MM YYYY')))");
+System.out.println(ps1);
+}
+catch(Exception e)
+{
+System.out.println(e);
+}
+}
+public void actionPerformed(ActionEvent ae)
+{
+String name,phone,email,username,password,age,addr,bdate;
+int mid;
+try
+{
+if(ae.getSource()==b1)
+{
+if(t1.getText().equals("") || t2.getText().equals("")  || t3.getText().equals("")  || t4.getText().equals("")  || t5.getText().equals("")  || t6.getText().equals("")  || t8.getText().equals("") )
+JOptionPane.showMessageDialog(null,"All fields are mandatory to fill in order to proceed!","Warning",JOptionPane.WARNING_MESSAGE);
+
+//if(t1.getText()!=null && t2.getText()!=null && t3.getText()!=null && t4.getText()!=null && t5.getText()!=null && t6.getText()!=null && t7.getText()!=null)
+else
+{
+mid=Integer.parseInt(t1.getText());
+System.out.println("mid="+mid);
+name=t2.getText();
+System.out.println("name="+name);
+phone=t4.getText();
+System.out.println("phone="+phone);
+email=t3.getText();
+System.out.println("email="+email);
+username=t5.getText();
+System.out.println("username="+username);
+password=t6.getText();
+System.out.println("password="+password);
+//age=t7.getText();
+bdate=t8.getText();
+System.out.println("bdate="+bdate);
+
+addr=tx1.getText();
+System.out.println("addr="+addr);
+
+ps1.setInt(1,mid);
+ps1.setString(2,name);
+ps1.setString(3,addr);
+ps1.setString(4,email);
+ps1.setString(5,phone);
+ps1.setString(6,username);
+ps1.setString(7,password);
+ps1.setString(8,bdate);
+//ps1.setString(9,age);
+System.out.println(ps1);
+ps1.executeUpdate();
+JOptionPane.showMessageDialog(null,"Data added to database successfully!");
+t1.setText("");
+tx1.setText("");
+t2.setText("");
+t3.setText("");
+t4.setText("");
+t5.setText("");
+t6.setText("");
+//t7.setText("");
+t8.setText("");
+}
+
+}
+if(ae.getSource()==b2)
+this.dispose();
+}
+catch (Exception e)
+{
+System.out.println(e);
+}
+}
+public void itemStateChanged(ItemEvent ie)
+{
+}
+public static void main(String args[])
+{
+new CreateCustomer();
+}
+}
+
+
+
+// --- File: LoginWindow.java ---
+
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+
+public class LoginWindow extends JFrame implements ActionListener {
+
+    Connection conn = null;
+
+    JTextField t1;
+    JPasswordField p1;
+    JButton b1;
+    JLabel l1, l2;
+
+    LoginWindow() {
+        setTitle("Login");
+        setLayout(null);
+
+        l1 = new JLabel("Username");
+        l2 = new JLabel("Password");
+        t1 = new JTextField();
+        p1 = new JPasswordField();
+        b1 = new JButton("Login");
+
+        add(l1);
+        add(l2);
+        add(t1);
+        add(p1);
+        add(b1);
+
+        l1.setBounds(40, 40, 100, 20);
+        l2.setBounds(40, 80, 100, 20);
+        t1.setBounds(140, 40, 120, 25);
+        p1.setBounds(140, 80, 120, 25);
+        b1.setBounds(90, 130, 100, 30);
+
+        // ✅ Correct event handling
+        b1.addActionListener(this);
+
+        setSize(300, 250);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+
+        // ✅ Database connection
+        try {
+            Class.forName("org.postgresql.Driver");
+            conn = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/project1",
+                "cmh1",
+                "1234"
+            );
+            System.out.println("Connected to database!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "DB Connection Failed!");
+            System.out.println(e);
+        }
+    }
+
+    // ✅ Login Logic
+    public void actionPerformed(ActionEvent ae) {
+
+    String username = t1.getText();
+    String password = new String(p1.getPassword());
+
+    try {
+        PreparedStatement ps = conn.prepareStatement(
+            "SELECT * FROM admin WHERE ausername=? AND apassword=?"
+        );
+
+        ps.setString(1, username);
+        ps.setString(2, password);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            JOptionPane.showMessageDialog(this, "Login Successful!");
+            new AdminWindow();
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid Username or Password!");
+        }
+
+    } catch (Exception e) {
+        System.out.println(e);
+    }
+}
+
+    public static void main(String[] args) {
+        new LoginWindow();
+    }
+}
+
+
+
+// --- File: UpdateAdmin.java ---
+
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+public class UpdateAdmin extends JFrame implements ActionListener
+{
+JTextField t1,t2,t3,t4,t5,t6,t7,t8;
+JLabel l1,l2,l3,l4,l5,l6,l7,l8,l9;
+JButton b1,b2;
+JComboBox cb1,cb2,cb3;
+JTextArea tx1;
+String day[]={"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31"};
+String month[]={"January","February","March","April","May","June","July","August","September","October","November","December"};
+String year[]={"1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008","2009","2010","2011","2012","2013","2014","2015","2016","2017","2018"};
+Connection conn=null;
+PreparedStatement ps1=null;
+UpdateAdmin()
+{
+setLayout(null);
+
+//aaddr aphone aemail apassword
+l1=new JLabel("Address");
+l1.setBounds(10,10,100,20);
+l2=new JLabel("Phone");
+l2.setBounds(10,60,100,20);
+l3=new JLabel("Email");
+l3.setBounds(10,90,100,20);
+l4=new JLabel("Password");
+l4.setBounds(10,120,100,20);
+add(l1);
+add(l2);
+add(l3);
+add(l4);
+/*add(l5);
+add(l6);                                 a,b,c,d	abcd,	abc bcd acd abd	,, ab ac ad bc bc cd 
+add(l7);
+add(l8);
+add(l9);*/
+
+tx1=new JTextArea(2,30);
+tx1.setBounds(120,10,150,40);
+t1=new JTextField(30);
+t1.setBounds(120,60,150,20);
+t2=new JTextField(30);
+t2.setBounds(120,90,150,20);
+
+//JScrollPane j=new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//tx1.add(j);
+t3=new JTextField(30);
+t3.setBounds(120,120,150,20);
+/*t4=new JTextField(30);
+t4.setBounds(120,150,150,20);
+t5=new JTextField(30);
+t5.setBounds(120,180,150,20);
+t6=new JTextField(30);
+t6.setBounds(120,210,150,20);
+t7=new JTextField(30);
+t7.setBounds(120,270,150,20);*/
+add(tx1);
+add(t1);
+add(t2);
+add(t3);
+/*
+add(t4);
+add(t5);
+add(t6);
+add(t7);*/
+
+b1=new JButton("Okay");
+b1.setBounds(120,150,100,20);
+b2=new JButton("Cancel");
+b2.setBounds(230,150,100,20);
+add(b1);
+b1.addActionListener(this);
+add(b2);
+b2.addActionListener(this);
+
+setSize(384,384);
+setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+setVisible(true);
+try
+{
+Class.forName("org.postgresql.Driver");
+conn=DriverManager.getConnection("jdbc:postgresql://localhost/project1","cmh1","1234");
+if(conn!=null)
+System.out.println("Connection estabalished to db project!");
+ps1=conn.prepareStatement("update admin set address=?,phone=?,email=?,password=?");
+System.out.println(ps1);
+}
+catch(Exception e)
+{
+System.out.println(e);
+}
+}
+public void actionPerformed(ActionEvent ae)
+{
+String name,phone,email,username,password,age,address;
+int id;
+try
+{
+if(ae.getSource()==b1)
+
+{
+address=tx1.getText();
+phone=t1.getText();
+email=t2.getText();
+//username=t5.getText();
+password=t3.getText();
+//if(address!=null && phone==null && email==null && password==null)
+//ps=conn.prepareStatement("update admin set address = ? where ");
+//age=t7.getText();
+//System.out.println(ps1);
+//ps1.executeUpdate();
+//JOptionPane.showMessageDialog(null,"Data added to database successfully!");
+}
+
+
+if(ae.getSource()==b2)
+{
+this.dispose();
+}
+}
+catch (Exception e)
+{
+System.out.println(e);
+}
+}
+public static void main(String args[])
+{
+new UpdateAdmin();
+}
+}
+
+
+
+// --- File: ViewWindow.java ---
+
+//import java.awt.BorderLayout;
+import java.awt.*;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+
+public class ViewWindow extends JFrame {
+
+
+	/**
+	 * Launch the application.
+	 */
+		private Connection con;
+
+	/**
+	 * Create the frame.
+	 */
+	public ViewWindow() {
+		try {
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			setBounds(100, 100, 450, 300);
+
+			JTable jt=new JTable();
+			
+			Class.forName("org.postgresql.Driver");
+			con=DriverManager.getConnection("jdbc:postgresql://localhost/project1","cmh1","1234");
+			Statement s=con.createStatement();
+			ResultSet rs=s.executeQuery("Select * from admin order by aid");
+			ResultSetMetaData rsmd=rs.getMetaData();
+			int col=rsmd.getColumnCount();
+			String header[]=new String[col];
+			for (int i = 0; i < header.length; i++) 
+                          header[i]=rsmd.getColumnLabel(i+1);
+			DefaultTableModel dtm=new DefaultTableModel(null, header);
+			
+			int cnt=1;
+			String data[]=new String[col];
+			while (rs.next()) {
+				for(int i=1;i<=col;i++)
+                                data[i-1]=rs.getString(i);
+				dtm.addRow(data);
+			}
+			jt.setModel(dtm);
+			JScrollPane jsp=new JScrollPane(jt, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			add(jsp,BorderLayout.CENTER);
+setVisible(true);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+public static void main(String[] args) {
+		
+					new ViewWindow();
+					//frame.setVisible(true);
+			
+	}
+
+
+
+}
+
+
+
+// --- File: ViewWindowb.java ---
+
+//import java.awt.BorderLayout;
+import java.awt.*;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+
+public class ViewWindowb extends JFrame {
+
+
+	/**
+	 * Launch the application.
+	 */
+		private Connection con;
+
+	/**
+	 * Create the frame.
+	 */
+	public ViewWindowb() {
+		try {
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			setBounds(100, 100, 450, 300);
+          		
+			JTable jt=new JTable();
+			
+			Class.forName("org.postgresql.Driver");
+			con=DriverManager.getConnection("jdbc:postgresql://localhost/project1","cmh1","1234");
+			Statement s=con.createStatement();
+			ResultSet rs=s.executeQuery("Select * from cbill order by bno");
+			ResultSetMetaData rsmd=rs.getMetaData();
+			int col=rsmd.getColumnCount();
+			String header[]=new String[col];
+			for (int i = 0; i < header.length; i++) 
+                          header[i]=rsmd.getColumnLabel(i+1);
+			DefaultTableModel dtm=new DefaultTableModel(null, header);
+			
+			int cnt=1;
+			String data[]=new String[col];
+			while (rs.next()) {
+				for(int i=1;i<=col;i++)
+                                data[i-1]=rs.getString(i);
+				dtm.addRow(data);
+			}
+			jt.setModel(dtm);
+			JScrollPane jsp=new JScrollPane(jt, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			add(jsp,BorderLayout.CENTER);
+setVisible(true);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+public static void main(String[] args) {
+		
+					new ViewWindowb();
+					//frame.setVisible(true);
+			
+	}
+
+
+
+}
+
+
+
+// --- File: ViewWindowc.java ---
+
+//import java.awt.BorderLayout;
+import java.awt.*;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+
+public class ViewWindowc extends JFrame {
+
+
+	/**
+	 * Launch the application.
+	 */
+		private Connection con;
+
+	/**
+	 * Create the frame.
+	 */
+	public ViewWindowc() {
+		try {
+			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			setBounds(100, 100, 450, 300);
+
+			JTable jt=new JTable();
+			
+			Class.forName("org.postgresql.Driver");
+			con=DriverManager.getConnection("jdbc:postgresql://localhost/project1","cmh1","1234");
+			Statement s=con.createStatement();
+			ResultSet rs=s.executeQuery("Select * from customer order by cid");
+			ResultSetMetaData rsmd=rs.getMetaData();
+			int col=rsmd.getColumnCount();
+			String header[]=new String[col];
+			for (int i = 0; i < header.length; i++) 
+                          header[i]=rsmd.getColumnLabel(i+1);
+			DefaultTableModel dtm=new DefaultTableModel(null, header);
+			
+			int cnt=1;
+			String data[]=new String[col];
+			while (rs.next()) {
+				for(int i=1;i<=col;i++)
+                                data[i-1]=rs.getString(i);
+				dtm.addRow(data);
+			}
+			jt.setModel(dtm);
+			JScrollPane jsp=new JScrollPane(jt, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			add(jsp,BorderLayout.CENTER);
+setVisible(true);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+public static void main(String[] args) {
+		
+					new ViewWindowc();
+					//frame.setVisible(true);
+			
+	}
+
+
+
+}
+
+
+

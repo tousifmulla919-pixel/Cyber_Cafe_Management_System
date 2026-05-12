@@ -1,0 +1,42 @@
+Before you import reviedproject.sql make sure you have completed below prerequisites :
+
+
+1) 
+Go to /etc/postgresql/9.5/main/   
+      or
+in postgres prompt type 'show hba_file' and in that location 
+Open pg_hba.conf and edit below line
+local all	postgres	peer
+should be
+local all	postgres	trust
+And
+localhost all all 127.0.0.1/32  ident
+should be
+localhost all all 127.0.0.1/32  md5
+
+2)
+Make sure you have created a database called project and created a role "cmh" with password "misc".(use command 'create user cmh with password 'misc';' to create role)
+
+
+Once you have completed the prerequisites, 
+
+Simply copy the revisedproject.sql file to any folder you want.
+Open the terminal in that folder.
+Run following command
+sudo -u postgres psql project < revisedproject.sql
+
+
+
+This command will complete the import process and you will be able to see below tables in "project" database :
+admin
+bill_bno_seq
+cbill
+customer
+customer_cid_seq
+membership
+pc
+timerec
+
+
+(Note : To view databases you can use \L command at psql command line and to view tables, you can use \d command after you get into DB )
+open admin table and get id and pass and then use them in LoginWindow.
