@@ -68,7 +68,7 @@ existing system.
 ## 📸 Screenshots
 
 ### Login Window
-![Login Window](screenshots/login.png)
+![Login Window](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/z7obp6td.png?raw=true)
 
 ### Admin Dashboard
 ![Admin Window](screenshots/admin_dashboard.png)
