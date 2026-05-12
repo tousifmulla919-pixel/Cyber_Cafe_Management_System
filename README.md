@@ -3,7 +3,7 @@ The Cybercafe Management System automates the billing and user management proces
 
 Each customer is assigned a **unique username**. When they visit, the employee logs their session — and the bill is calculated based on time used. Customers with a **membership** get discounted rates for a fixed number of hours. 
 
-# Scope of the System
+## Scope of the System
 ➢ This designated system aims to minimize the manual work done. The entire process of paper form filing, submission and report generation is done online. 
 ➢ Data processing and representation is very fast in proposed system as compared to 
 existing system. 
@@ -13,7 +13,7 @@ existing system.
 ➢ No more paper work required. 
 ➢ No more repetition of work or data.
 
-# Advantages of System 
+### Advantages of System 
 ➢ Administrators maintains/modify/create and also able to delete the user. 
 ➢ Faster technique to generate bill. 
 ➢ Paper works not required. 
