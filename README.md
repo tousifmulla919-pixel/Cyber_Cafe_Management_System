@@ -95,9 +95,3 @@ Each customer is assigned a **unique username**. When they visit, the employee l
 - Enhanced UI with modern design
 
 ---
-
-## 📚 References
-
-- [stackoverflow.com](https://www.stackoverflow.com)
-- [w3schools.com](https://www.w3schools.com)
-- [geeksforgeeks.org](https://www.geeksforgeeks.org)
