@@ -71,7 +71,7 @@ existing system.
 ![Login Window](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/z7obp6td.png?raw=true)
 
 ### Admin Dashboard
-![Admin Window](screenshots/admin_dashboard.png)
+![Admin Window](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/02_admin_dashboard.png?raw=true)
 
 ### Employee Management
 ![Employee Management](screenshots/employee_management.png)
