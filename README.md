@@ -73,23 +73,17 @@ existing system.
 ### Admin Dashboard
 ![Admin Window](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/02_admin_dashboard.png?raw=true)
 
-### Employee Management
-![Employee Management](screenshots/employee_management.png)
-
-### Create Employee
-![Create Employee](screenshots/create_employee.png)
-
 ### View Employees
-![View Employees](screenshots/view_employees.png)
+![View Employees]()
 
 ### Create Customer
-![Create Customer](screenshots/create_customer.png)
+![Create Customer]()
 
 ### Bill Management – New Bill
-![New Bill](screenshots/new_bill.png)
+![New Bill]()
 
 ### View Bills
-![View Bills](screenshots/view_bills.png)
+![View Bills]()
 
 ---
 
