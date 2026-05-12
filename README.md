@@ -1,7 +1,24 @@
 # Cyber_Cafe_Management_System
 The Cybercafe Management System automates the billing and user management process of a cybercafe. It eliminates manual paperwork by digitally tracking customer login/logout times and generating bills automatically.
 
-Each customer is assigned a **unique username**. When they visit, the employee logs their session — and the bill is calculated based on time used. Customers with a **membership** get discounted rates for a fixed number of hours.
+Each customer is assigned a **unique username**. When they visit, the employee logs their session — and the bill is calculated based on time used. Customers with a **membership** get discounted rates for a fixed number of hours. 
+
+# Scope of the System
+➢ This designated system aims to minimize the manual work done. The entire process of paper form filing, submission and report generation is done online. 
+➢ Data processing and representation is very fast in proposed system as compared to 
+existing system. 
+➢ Ensure data integrity and security. 
+➢ Less manpower. 
+➢ User-friendly system that would be easy to operate. 
+➢ No more paper work required. 
+➢ No more repetition of work or data.
+
+# Advantages of System 
+➢ Administrators maintains/modify/create and also able to delete the user. 
+➢ Faster technique to generate bill. 
+➢ Paper works not required. 
+➢ All monitoring is done by admin. 
+➢ Only admins have all the rights.
 
 ---
 
@@ -83,15 +100,5 @@ Each customer is assigned a **unique username**. When they visit, the employee l
 3. Update the DB connection settings in the source code
 4. Compile and run `LoginWindow.java`
 5. Login with admin credentials to access the dashboard
-
----
-
-## 🔮 Future Enhancements
-
-- Online/web-based version for remote access
-- Automated reports and analytics for admin
-- SMS/email notifications for billing
-- Support for multiple cafes under one system
-- Enhanced UI with modern design
 
 ---
