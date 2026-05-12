@@ -83,7 +83,7 @@ existing system.
 ![New Bill](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/14_new_bill.png?raw=true)
 
 ### View Bills
-![View Bills]()
+![View Bills](https://github.com/tousifmulla919-pixel/Cyber_Cafe_Management_System/blob/main/15_view_bills.png?raw=true)
 
 ---
 
